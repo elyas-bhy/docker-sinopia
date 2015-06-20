@@ -1,0 +1,8 @@
+d: 
+    image: so0k/sinopia:latest
+    host: sinopia
+    volumes: 
+      - ~/sinopia/storage/:/opt/sinopia/storage/
+      - ~/sinopia/config/:/opt/sinopia/config/
+    ports:
+      - "4873:4873"

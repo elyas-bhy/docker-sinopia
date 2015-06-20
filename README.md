@@ -4,11 +4,19 @@ Sinopia is a private npm repository server
 
 ### Installing Image
 
-`docker pull keyvanfatehi/sinopia:latest`
+`docker pull so0k/sinopia:latest`
 
 ### Creating Container
 
-`docker run --name sinopia -d -p 4873:4873 keyvanfatehi/sinopia:latest`
+```
+mkdir -p /var/sinopia/storage
+# get default config file. It allows all users to do anything (modify for production)
+curl -L https://raw.githubusercontent.com/rlidwka/sinopia/master/conf/default.yaml -o /var/sinopia/config.yaml
+vim /var/sinopia/config.yaml
+docker run --name sinopia -d -p 4873:4873 -h npm \
+    -v /var/sinopia/config.yaml:/opt/sinopia/config.yaml -v /var/sinopia/storage:/opt/sinopia/storage  \
+    so0k/sinopia:latest
+```
 
 ### Setting Registry
 
@@ -20,47 +28,7 @@ Sinopia is a private npm repository server
 
 ### Modify configuration
 
-There are two ways to modify the configuration.
-
-To understand the difference, view the conversation here: https://github.com/keyvanfatehi/docker-sinopia/pull/10
-
-### Original Method
-
-```
-docker stop sinopia
-docker run --volumes-from sinopia -it --rm ubuntu vi /opt/sinopia/config.yaml
-docker start sinopia
-```
-
-### Alternative Method
-
-```
-# Save the config file
-curl -L https://raw.githubusercontent.com/rlidwka/sinopia/master/conf/default.yaml -o /path/to/config.yaml
-# Mount the config file to the exposed data volume
-docker run -v /path/to/config.yaml:/opt/sinopia/config.yaml --name sinopia -d -p 4873:4873 keyvanfatehi/sinopia:latest
-```
-
-Restart the container anytime you change the config.
-
-### Backups
-
-`docker run --volumes-from sinopia -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /opt/sinopia`
-
-Alternatively, host path for /opt/sinopia can be determined by running:
-
-`docker inspect sinopia`
-
-### Restore
-
-```
-docker stop sinopia
-docker rm sinopia
-docker run --name sinopia -d -p 4873:4873 keyvanfatehi/sinopia:latest
-docker stop sinopia
-docker run --volumes-from sinopia -v $(pwd):/backup ubuntu tar xvf /backup/backup.tar
-docker start sinopia
-```
+`vim /var/sinopia/config.yaml`
 
 ## Links
 
